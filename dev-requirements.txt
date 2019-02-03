@@ -4,3 +4,7 @@ mock
 pytest
 pytest-cov
 tox
+
+# Needed for qt://, kde://, glib://, and dbus:// unit tests
+# see test/test_glib_plugin.py for more details
+dbus-python
