@@ -77,9 +77,6 @@ class NotifyDiscord(NotifyBase):
     # The maximum allowable characters allowed in the body per message
     body_maxlen = 2000
 
-    # Default Notify Format
-    notify_format = NotifyFormat.MARKDOWN
-
     def __init__(self, webhook_id, webhook_token, tts=False, avatar=True,
                  footer=False, thumbnail=True, **kwargs):
         """
@@ -150,6 +147,8 @@ class NotifyDiscord(NotifyBase):
         }
 
         if self.notify_format == NotifyFormat.MARKDOWN:
+
+            # Break titles out so that we can sort them in embeds
             fields = self.extract_markdown_sections(body)
 
             if len(fields) > 0:

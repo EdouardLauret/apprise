@@ -1719,19 +1719,24 @@ def test_notify_discord_plugin(mock_post, mock_get):
     assert obj.notify(title='title', body=test_markdown,
                       notify_type=NotifyType.INFO) is True
 
+    # Create an apprise instance
+    a = Apprise()
+
     # Our processing is slightly different when we aren't using markdown
     # as we do not pre-parse content during our notifications
-    obj = plugins.NotifyDiscord(
-        webhook_id=webhook_id,
-        webhook_token=webhook_token,
-        notify_format=NotifyFormat.TEXT)
-
-    # Disable throttling to speed up unit tests
-    obj.throttle_attempt = 0
+    assert a.add(
+        'discord://{webhook_id}/{webhook_token}/?format=markdown'.format(
+            webhook_id=webhook_id,
+            webhook_token=webhook_token)) is True
 
     # This call includes an image with it's payload:
-    assert obj.notify(title='title', body='body',
-                      notify_type=NotifyType.INFO) is True
+    assert a.notify(title='title', body=test_markdown,
+                    notify_type=NotifyType.INFO,
+                    body_format=NotifyFormat.TEXT) is True
+
+    assert a.notify(title='title', body=test_markdown,
+                    notify_type=NotifyType.INFO,
+                    body_format=NotifyFormat.MARKDOWN) is True
 
 
 @mock.patch('requests.get')
